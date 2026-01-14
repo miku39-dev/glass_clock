@@ -37,12 +37,10 @@
       align-items: center;
     }
 
-    /* デフォルト：ライトモード用（ダークグレー） */
     .time {
       font-size: 3.2rem;
       font-weight: 300;
       letter-spacing: 2px;
-      color: #333333;
     }
 
     .date {
@@ -50,12 +48,7 @@
       font-weight: 500;
       margin-top: 10px;
       letter-spacing: 1px;
-      color: #555555;
     }
-
-    /* ダークモード時のみ上書き */
-    body.dark .time { color: #ffffff; }
-    body.dark .date { color: #e0e0e0; }
   </style>
 </head>
 <body>
@@ -65,17 +58,20 @@
   </div>
 
   <script>
-    // ダークモード検出
-    function detectColorScheme() {
-      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.body.classList.add('dark');
+    const timeEl = document.getElementById('time');
+    const dateEl = document.getElementById('date');
+
+    function applyColors() {
+      const isDark = false;
+      
+      if (isDark) {
+        timeEl.style.color = '#ffffff';
+        dateEl.style.color = '#e0e0e0';
       } else {
-        document.body.classList.remove('dark');
+        timeEl.style.color = '#333333';
+        dateEl.style.color = '#555555';
       }
     }
-
-    detectColorScheme();
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', detectColorScheme);
 
     function updateClock() {
       const now = new Date();
@@ -83,13 +79,18 @@
       const hours = String(now.getHours()).padStart(2, '0');
       const minutes = String(now.getMinutes()).padStart(2, '0');
 
-      document.getElementById('time').textContent = hours + ':' + minutes;
+      timeEl.textContent = hours + ':' + minutes;
 
       const options = { month: 'short', day: 'numeric', weekday: 'short' };
       const dateStr = now.toLocaleDateString('ja-JP', options);
-      document.getElementById('date').textContent = dateStr;
+      dateEl.textContent = dateStr;
     }
 
+    // 色を適用
+    applyColors();
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyColors);
+
+    // 時計を更新
     updateClock();
     setInterval(updateClock, 1000);
   </script>
